@@ -3567,7 +3567,11 @@ function saveScreenLabel(s){
 // Ein bereits gelöster Rätselraum wird nicht erneut gezeigt: weiter wie nach dem Enthüllungs-Dialog.
 function saveResumeTarget(s){
   const m=/^room(\d+)$/.exec(s||'');
-  if(m && state.solved[+m[1]-1]) return +m[1]>=SAVE_ROOMS ? 'final' : 'lib'+(+m[1]+1);
+  if(!m) return s;
+  const i=+m[1]-1;
+  // Gerade richtig gelöst, die Enthüllung (triggerReveal, 800 ms verzögert) steht noch aus: Ergebnis schon jetzt eintragen.
+  if(!state.solved[i] && [r1Submitted,r2Submitted,r3Submitted,r4Submitted,r5Submitted,r6Submitted][i]){ state.solved[i]=true; state.letters[i]=CODE_WORD[i]; }
+  if(state.solved[i]) return +m[1]>=SAVE_ROOMS ? 'final' : 'lib'+(+m[1]+1);
   return s;
 }
 function saveGoTo(s){
