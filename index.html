@@ -311,7 +311,6 @@ p.body-lg{ font-size:16.5px; line-height:1.7; }
 .reveal-progress-letter{ width:40px; height:48px; display:flex; align-items:center; justify-content:center; font-family:var(--font-display); font-size:23px; font-weight:700; color:var(--ink-mute); background:var(--surface-alt); border:2px solid var(--border); border-radius:10px; }
 .reveal-progress-letter.lit{ color:#fff; border-color:transparent; box-shadow:0 0 10px rgba(240,171,51,0.5); }
 
-/* ---------- Final ---------- */
 /* ---------- Zwischenstand-Seite (nach dem letzten Rätselraum, vor dem Finale) ---------- */
 .mid-hero{ text-align:center; margin-bottom:18px; }
 .mid-hero .section-title{ font-size:clamp(26px,3.6vw,34px); margin-bottom:2px; }
@@ -351,8 +350,6 @@ p.body-lg{ font-size:16.5px; line-height:1.7; }
 @keyframes glowpulse{ 0%,100%{ opacity:0.85; } 50%{ opacity:1; } }
 .lantern-wrap .glow{ animation:glowpulse 2.6s ease-in-out infinite; transform-origin:center; }
 
-/* ---- Download-Button + Arena (Finale) ---- */
-
 /* ---------- Video-Einbettung (Intro & Finale) ---------- */
 .video-wrap{
   position:relative; width:100%; padding-top:56.25%;
@@ -361,6 +358,8 @@ p.body-lg{ font-size:16.5px; line-height:1.7; }
 }
 .video-wrap iframe{ position:absolute; inset:0; width:100%; height:100%; border:0; }
 .arena .video-wrap{ max-width:760px; margin:0 auto 22px; }
+.fallback-line{ display:flex; gap:14px; flex-wrap:wrap; align-items:center; margin:-12px 0 26px; font-size:14px; color:var(--ink-soft); }
+.arena .fallback-line{ justify-content:center; max-width:760px; margin:-8px auto 22px; color:#b9c4d8; }
 /* ---- Arena: das große Finale gegen den Feiditor (dunkel, dramatisch) ---- */
 .arena{ background:radial-gradient(120% 90% at 50% 0%, #17223a 0%, #0b1220 55%, #070c16 100%); color:#e9eef7; border-radius:14px; padding:26px 28px 26px; margin-top:22px; box-shadow:0 18px 50px rgba(0,0,0,.45); border:1px solid rgba(255,255,255,.06); }
 .arena-kicker{ font-family:var(--font-mono); font-size:11px; letter-spacing:.28em; text-transform:uppercase; color:#d6b25e; font-weight:600; text-align:center; }
@@ -2495,7 +2494,7 @@ class PdfDoc{
 }
 
 /* ============================================================
-   LÖSUNGSERLÄUTERUNGEN (für PDF 1, Seite 2)
+   LÖSUNGSERLÄUTERUNGEN (für die Überblick-PDF, ab Seite 2)
    ============================================================ */
 const SOLUTION_NOTES = [
   { room:'Raum 01 · Was ist das Gewissen?',
@@ -2522,7 +2521,7 @@ const ROOM_LABELS = [
 ];
 
 /* ============================================================
-   PDF 1 — „Überblick deiner Antworten & Erläuterungen"
+   Überblick-PDF — „Überblick deiner Antworten & Erläuterungen" (Lösungserläuterungen ab Seite 2)
    ============================================================ */
 function fmtDateTime(d){
   if(!d) d=new Date();
@@ -2660,7 +2659,7 @@ function generateOverviewPdf(){
   doc.text('Copyright Jan-Rickmer Feindt',M,y2,8.5,false,MUTE);
   doc.endPage();
 
-  // Versteckte Rekonstruktionsdaten für den Standalone-Feiditor (nach %%EOF, von Viewern ignoriert).
+  // Versteckte Rekonstruktionsdaten für den Standalone-Feiditor (als Kommentarzeile %ESCAPEDATA im PDF-Kopf, von Viewern ignoriert).
   // Enthält: Vorname, Nachname, die sechs Feiditor-Aufgaben und die beiden roten Feldtexte.
   const escData = { v: state.firstName, n: state.lastName, t: REFLECT_TASKS.slice(0,6), r: RED_FIELDS, c: ROOM_CONTEXT };
   let escB64='';
@@ -2917,6 +2916,10 @@ function renderIntro(){
   root.innerHTML=`
     <div class="video-wrap">
       <iframe src="https://www.youtube-nocookie.com/embed/ShLxo4Mrb0I?rel=0" title="Einführung in den Escape-Room" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+    </div>
+    <div class="fallback-line">
+      <span>Video lädt nicht oder zeigt einen Fehler?</span>
+      <a class="btn btn-ghost" href="https://www.youtube.com/watch?v=ShLxo4Mrb0I" target="_blank" rel="noopener noreferrer">Direkt auf YouTube öffnen ↗</a>
     </div>
     <div class="kicker">Die Geschichte</div>
     <h1 class="title-mega">Hallo,<br><em>${escapeHtml(state.firstName)}</em>!</h1>
@@ -3558,6 +3561,10 @@ function renderFinal(){
       <h2>Erst das Video, dann durch den Gang</h2>
       <div class="video-wrap">
         <iframe src="https://www.youtube-nocookie.com/embed/Sh0REtJ1o5w?rel=0" title="Das große Finale in der Arena" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+      </div>
+      <div class="fallback-line">
+        <span>Video lädt nicht oder zeigt einen Fehler?</span>
+        <a class="btn btn-ghost" href="https://www.youtube.com/watch?v=Sh0REtJ1o5w" target="_blank" rel="noopener noreferrer">Direkt auf YouTube öffnen ↗</a>
       </div>
       <button class="arena-gate" onclick="openFeiditor()" aria-label="Finale gegen den Feiditor betreten">
         <svg viewBox="0 0 800 460" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Ein dunkler Gang führt auf das hell erleuchtete Spielfeld einer Arena">
